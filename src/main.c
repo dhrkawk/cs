@@ -49,12 +49,12 @@ void insert_last(ArrayListType *L, element item){
 	L->array[L->size++] = item;
 }
 
-void insert(ArrayListType *L, element item, int pos){
+void insert(ArrayListType *L, int pos, element item){
 	if(is_full(L)){
 		error("리스트 오버플로우");
 	}
 	if(pos<0 || pos>L->size){
-		error("위치 오류");
+		error("위치 오류1");
 	}
 	for(int i=L->size-1;i>=pos;i--){
 		L->array[i+1] = L->array[i];
@@ -80,7 +80,6 @@ element delete(ArrayListType *L, int pos){
 int main(){
 	ArrayListType list;
 	init_List(&list);
-	
 	
 	insert(&list,0,10);
 	print_List(&list);
