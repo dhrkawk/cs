@@ -81,6 +81,7 @@ int main(){
 	ArrayListType list;
 	init_List(&list);
 	
+	
 	insert(&list,0,10);
 	print_List(&list);
 	insert(&list,0,20);
