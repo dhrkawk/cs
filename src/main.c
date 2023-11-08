@@ -1,79 +1,63 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX_TERMS 101
+#define MAX_TERMS 100
+
 typedef struct{
-	float coef;
-	int expon;
-}polynomial;
-polynomial terms[MAX_TERMS] = {{8,3},{7,1},{1,0},{10,3},{3,2},{1,0}};
-int avail =6;
+	int row;
+	int col;
+	int value;
+}element;
 
-char comp(int a, int b){
-	if(a>b) return '>';
-	else if (a ==b) return '=';
-	else return '<';
-}
+typedef struct{
+	element data[MAX_TERMS];
+	int rows;
+	int cols;
+	int terms;
+}SparseMatrix;
 
-void attatch(float coef, int expon){
-	if(avail>MAX_TERMS){
-		fprintf(stderr,"항 개수 초과");
-		exit(1);
-	}
-	terms[avail].coef = coef;
-	terms[avail].expon = expon;
+SparseMatrix matrix_transpose(SparseMatrix a){
+	SparseMatrix b;
 	
-	avail++;
-}
-
-void poly_add2(int As,int Ae,int Bs, int Be, int *Cs, int *Ce){
-	float tempcoef;
-	*Cs = avail;
-	while(As<=Ae && Bs<=Be){
-		switch(comp(terms[As].expon,terms[Bs].expon)){
-			case '>':
-				attatch(terms[As].coef,terms[As].expon);
-				printf(">avail call     ");
-				As++; break;
-			case '=':
-				tempcoef = terms[As].coef + terms[Bs].coef;
-				if(tempcoef !=0) {
-					attatch(tempcoef,terms[As].expon);
-					printf("=avail call     ");
+	int bindex;
+	b.rows = a.rows;
+	b.cols = a.cols;
+	b.terms = a.terms;
+	
+	if(a.terms>0){
+		bindex=0;
+		for(int n=0;n<a.cols;n++){  // 기존 행렬의 열이 행으로 바뀌니까 열기준
+			for(int i=0; i<a.terms; i++){ // 0이 아닌 항의 개수만큼
+				if(a.data[i].col == n){ 
+                // 열기준으로 같은 값이 있으면 새 행렬에 넣자
+					b.data[bindex].row= a.data[i].col;
+					b.data[bindex].col= a.data[i].row;
+					b.data[bindex].value= a.data[i].value;
+					bindex++;
 				}
-				As++; Bs++; break;     
-                // 여기 break; 안걸어줬다가 두시간은 헤맸다..
-			case '<':
-				attatch(terms[Bs].coef,terms[Bs].expon);
-				printf("<avail call     ");
-				Bs++; break;
+			}
 		}
 	}
-	for(;As<=Ae;As++){
-		attatch(terms[As].coef,terms[As].expon);
-		printf("AAavail call     ");
-	}
-	for(;Bs<=Be;Bs++){
-		attatch(terms[Bs].coef,terms[Bs].expon);
-		printf("BBavail call     ");
-	}
-	*Ce = avail-1;
+	return b;
 }
 
-void print_poly(int s, int e){
-	for(int i=s;i<e;i++){
-		printf("%3.lfx^%d + ",terms[i].coef,terms[i].expon);
+void matrix_print(SparseMatrix a){
+	printf("================\n");
+	for(int i=0; i<a.terms;i++){
+		printf("%d %d %d\n",a.data[i].row, a.data[i].col,a.data[i].value);
 	}
-	printf("%3.lfx^%d\n",terms[e].coef,terms[e].expon);
+	printf("================\n");
 }
 
 int main(){
-	int As=0, Ae = 2, Bs = 3, Be = 5, Cs, Ce;
-	poly_add2(As,Ae,Bs,Be,&Cs,&Ce);
-	printf("%d %d %d %d %d %d\n",As,Ae,Bs,Be,Cs,Ce);
-	print_poly(As,Ae);
-	print_poly(Bs,Be);
-	printf("----------------------\n");
-	print_poly(Cs,Ce);
-	return 0;
+	SparseMatrix m = {
+		{{0,3,7},{1,0,9},{1,5,8},{3,0,6},{3,1,5},{4,5,1},{5,2,2}},
+		6,
+		6,
+		7
+	};
+	SparseMatrix result;
+	
+	result = matrix_transpose(m);
+	matrix_print(result);
 }
