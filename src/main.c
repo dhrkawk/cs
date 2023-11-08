@@ -1,66 +1,79 @@
 #include <stdio.h>
-#define MAX(a,b) (((a)>(b)?(a):(b)))
-#define MAX_DEGREE 101
+#include <stdlib.h>
+
+#define MAX_TERMS 101
 typedef struct{
-	int degree;
-	float coef[MAX_DEGREE];
-} polynomial;
+	float coef;
+	int expon;
+}polynomial;
+polynomial terms[MAX_TERMS] = {{8,3},{7,1},{1,0},{10,3},{3,2},{1,0}};
+int avail =6;
 
-int start= 0; // 두 다항식의 최고차항의 계수 합이 0이 아닌 차수까지 이동시켜주는 포인터
-
-polynomial poly_add1(polynomial A,polynomial B){
-	polynomial C;
-	int Apos=0; 
-	int Bpos=0; 
-	int Cpos=0;
-	int degree_a = A.degree;
-	int degree_b = B.degree;
-	int Apointer = A.degree; // 최고차항을 가르키는 포인터
-	
-	C.degree = MAX(A.degree,B.degree);
-	
-	while(Apos<=A.degree && Bpos<=B.degree){
-		if(degree_a>degree_b){
-			C.coef[Cpos++]=A.coef[Apos++];
-			degree_a--;
-		}
-		else if(degree_a == degree_b){ // 두 다항식 둘다
-			if(degree_a==Apointer){ // 최고차항이라면
-				if(A.coef[start]+B.coef[start]==0){ //최고차항의 계수의 합이 0인지 확인
-					start++; // 포인터를 옮겨준다
-					Apointer--;
-				}
-			}
-		
-			C.coef[Cpos++]= A.coef[Apos++] + B.coef[Bpos++];
-			degree_a--;
-			degree_b--;
-		}
-		else{
-			C.coef[Cpos++] = B.coef[Bpos++];
-			degree_b--;
-		}
-	}
-	return C;
+char comp(int a, int b){
+	if(a>b) return '>';
+	else if (a ==b) return '=';
+	else return '<';
 }
 
-void print_poly(polynomial p){
-	for(int i=start;i<p.degree;i++){ // 포인터 위치부터 출력을 시작해준다
-		printf("%3.lfx^%d + ",p.coef[i],p.degree-i);
+void attatch(float coef, int expon){
+	if(avail>MAX_TERMS){
+		fprintf(stderr,"항 개수 초과");
+		exit(1);
 	}
+	terms[avail].coef = coef;
+	terms[avail].expon = expon;
 	
-	printf("%3.lf\n",p.coef[p.degree]);
+	avail++;
+}
+
+void poly_add2(int As,int Ae,int Bs, int Be, int *Cs, int *Ce){
+	float tempcoef;
+	*Cs = avail;
+	while(As<=Ae && Bs<=Be){
+		switch(comp(terms[As].expon,terms[Bs].expon)){
+			case '>':
+				attatch(terms[As].coef,terms[As].expon);
+				printf(">avail call     ");
+				As++; break;
+			case '=':
+				tempcoef = terms[As].coef + terms[Bs].coef;
+				if(tempcoef !=0) {
+					attatch(tempcoef,terms[As].expon);
+					printf("=avail call     ");
+				}
+				As++; Bs++; break;     
+                // 여기 break; 안걸어줬다가 두시간은 헤맸다..
+			case '<':
+				attatch(terms[Bs].coef,terms[Bs].expon);
+				printf("<avail call     ");
+				Bs++; break;
+		}
+	}
+	for(;As<=Ae;As++){
+		attatch(terms[As].coef,terms[As].expon);
+		printf("AAavail call     ");
+	}
+	for(;Bs<=Be;Bs++){
+		attatch(terms[Bs].coef,terms[Bs].expon);
+		printf("BBavail call     ");
+	}
+	*Ce = avail-1;
+}
+
+void print_poly(int s, int e){
+	for(int i=s;i<e;i++){
+		printf("%3.lfx^%d + ",terms[i].coef,terms[i].expon);
+	}
+	printf("%3.lfx^%d\n",terms[e].coef,terms[e].expon);
 }
 
 int main(){
-	polynomial a= {4,{6,0,0,0,10}};
-	polynomial b= {4,{-6,0,5,0,1}};
-	polynomial c;
-	
-	print_poly(a);
-	print_poly(b);
-	c= poly_add1(a,b);
-	printf("-------------------------------\n");
-	print_poly(c);
+	int As=0, Ae = 2, Bs = 3, Be = 5, Cs, Ce;
+	poly_add2(As,Ae,Bs,Be,&Cs,&Ce);
+	printf("%d %d %d %d %d %d\n",As,Ae,Bs,Be,Cs,Ce);
+	print_poly(As,Ae);
+	print_poly(Bs,Be);
+	printf("----------------------\n");
+	print_poly(Cs,Ce);
 	return 0;
 }
