@@ -1,30 +1,22 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-void insert(int array[],int loc, int value,int items){
-	for(int i=items; i>=loc; i--){
-		array[i] = array[i-1];
-	}
-	array[loc-1]=value;
-	items++;
-}
-
-void delete(int array[],int loc,int items){
-	for(int i=loc; i<=items;i++){
-		array[i-1] = array[i];
-	}
-	items--;
-}
+typedef struct test{
+	int a;
+	char words[20];
+}Test;
 
 int main(){
-	int arr[9] = {1,2,3,4,5,6,7,8};
-	insert(arr,3,11,8);
-	for(int i=0;i<9;i++){
-		printf("%d ",arr[i]);
+	Test* t;
+	t = (Test*)malloc(sizeof(Test));
+	if(t==NULL){
+		fprintf(stderr,"널포인터 오류");
+		exit(1);
 	}
-	printf("\n");
-	delete(arr,3,9);
-	for(int i=0;i<8;i++){
-		printf("%d ",arr[i]);
-	}
-	printf("\n");
+	t->a = 100;
+	strcpy(t->words,"just testing");
+	printf("%d이랑 %s\n",t->a,t->words);
+	free(t);
+	return 0;
 }
