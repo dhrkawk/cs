@@ -92,7 +92,14 @@ int main(void){
 	head1= insert_first(head1,30);
 	print_list(head1);
 	
+<<<<<<< HEAD:src/main.c
 	head2= reverse(head1);
 	print_list(head2);
 	return 0;
 }
+=======
+	free(list1);
+	free(list2);
+	free(list3);
+}
+>>>>>>> f05ed1bf229e813042f6da9107af90e86859f878:ds/6poly_add_list.c
