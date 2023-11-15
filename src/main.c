@@ -3,109 +3,96 @@
 
 typedef int element;
 typedef struct ListNode{
-	int coef;
-	int expon;
+	element data;
 	struct ListNode *link;
 }ListNode;
-
-typedef struct ListType{
-	int size;
-	ListNode *head;
-	ListNode *tail;
-}ListType;
-
-ListType *create(){
-	ListType *plist = (ListType*)malloc(sizeof(ListType));
-	plist -> size = 0;
-	plist -> head = plist->tail = NULL;
-	return plist;
-}
 
 void error(char *message){
 	fprintf(stderr,"%s\n",message);
 	exit(1);
 }
 
-void insert_last(ListType* plist, int coef, int expon){
-	ListNode* temp = (ListNode*)malloc(sizeof(ListNode));
-	if(temp == NULL) error("메모리 할당 에러");
-	temp->coef = coef;
-	temp->expon = expon;
-	temp->link = NULL;
-	if(plist->tail == NULL){
-		plist->head = plist->tail = temp;
-	}
-	else{
-		plist->tail->link = temp;
-		plist->tail = temp;
-	}
-	plist->size++;
+ListNode* insert_first(ListNode *head, int value){
+	ListNode *p = (ListNode*)malloc(sizeof(ListNode));
+	p->data = value;
+	p->link = head;
+	head = p;
+	return head;
 }
 
-void poly_add(ListType* a, ListType* b, ListType* c){
-	ListNode* p = a->head;
-	ListNode* q = b->head;
-	int sum;
-	
-	while(p&&q){ // p와 q가 null이 아닌동안
-		if(p->expon == q->expon){ //case1
-			sum = p->coef + q -> coef;
-			if(sum !=0) insert_last(c,sum,p->expon);
-			p = p->link;
-			q = q->link;
-		}
-		else if(p->expon > q->expon){ //case2
-			insert_last(c,p->coef,p->expon);
-			p = p->link;
-		}
-		else{ //case3
-			insert_last(c,q->coef,q->expon);
-			q = q->link;
-		}
-	}
-	
-	for(; p!=NULL; p= p->link){
-		insert_last(c, p->coef, p->expon);
-	}
-	for(; q!=NULL; q = q->link){
-		insert_last(c, q->coef, q->expon);
-	}
+ListNode* insert(ListNode *head, ListNode *pre, element value){
+	ListNode *p = (ListNode*)malloc(sizeof(ListNode));
+	p->data=value;
+	p->link = pre->link;
+	pre->link = p;
+	return head;
 }
 
-void poly_print(ListType* plist){
-	ListNode* p = plist->head;
-	
-	printf("polynomial = ");
-	for(; p; p = p->link){
-		printf("%d^%d + ",p->coef,p->expon);
-	}
-	printf("\n");
+ListNode* delete_first(ListNode* head){
+	ListNode* removed;
+	if(head == NULL) return NULL;
+	removed = head;
+	head = removed->link;
+	free(removed);
+	return head;
 }
 
+ListNode* delete(ListNode* head, ListNode* pre){
+	ListNode* removed;
+	removed = pre->link;
+	pre->link = removed ->link;
+	free(removed);
+	return head;
+}
+
+void print_list(ListNode* head){
+	for(ListNode *p = head; p!=NULL;p= p->link){
+		printf("%d->",p->data);
+	}
+	printf("NULL \n");
+}
+
+/*element get_entry(ListNode* head, int index){
+	ListNode* p = (ListNode*)malloc(sizeof(ListNode));
+	p= head;
+	for(int i=0;i<index-1;i++){
+		p = p->link;
+	}
+	return p->data;
+}
+
+int get_count(ListNode* head){
+	int count=0;
+	for(ListNode *p = head; p!=NULL;p= p->link){
+		count++;
+	}
+	return count;
+}*/
+
+ListNode* reverse(ListNode *head){
+	ListNode *p, *q, *r;
+	p= head; // 역순으로 만들 리스트
+	q= NULL; // 역순으로 만들 노드
+	while(p != NULL){
+		r = q; // 역순으로 된 리스트
+		q = p;
+		p = p->link;
+		q->link = r;
+	}
+	return q;
+}
 
 
 int main(void){
-	ListType *list1, *list2, *list3;
+	ListNode *head1 = NULL;
+	ListNode *head2 = NULL;
 	
-	list1 = create();
-	list2 = create();
-	list3 = create();
+	head1= insert_first(head1,10);
+	head1= insert_first(head1,20);
+	head1= insert_first(head1,30);
+	print_list(head1);
 	
-	insert_last(list1,3,12);
-	insert_last(list1,2,8);
-	insert_last(list1,1,0);
-	
-	insert_last(list2,8,12);
-	insert_last(list2,-3,10);
-	insert_last(list2,10,6);
-	
-	poly_print(list1);
-	poly_print(list2);
-	
-	poly_add(list1,list2,list3);
-	poly_print(list3);
-	
-	free(list1);
-	free(list2);
-	free(list3);
+	head2= reverse(head1);
+	print_list(head2);
+	return 0;
 }
