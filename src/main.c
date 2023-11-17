@@ -25,24 +25,6 @@ void error(char *message){
 	exit(1);
 }
 
-void insert_last_right_front(ListType* plist, element data){
-	ListNode* temp = (ListNode*)malloc(sizeof(ListNode));
-	if(temp == NULL) error("메모리 할당 에러");
-	temp->data = data;
-	temp->link = NULL;
-	
-	ListNode* p = (ListNode*)malloc(sizeof(ListNode));
-	p = plist->head;
-	while(p->link !=NULL) p = p->link;
-	ListNode* pre = (ListNode*)malloc(sizeof(ListNode));
-	pre = plist->head;
-	while(pre->link != p) pre= pre->link;
-	temp->link = p;
-	pre->link = temp;
-	pre = temp;
-	
-	plist->size++;
-}
 
 
 
@@ -89,72 +71,7 @@ void alternate(ListType* head1, ListType* head2, ListType* head3){
 	}
 }
 
-void merge(ListType* head1, ListType* head2, ListType* head3){
-	ListNode* p = head1->head;
-	ListNode* q = head2->head;
-	//p와 q의 데이터를 비교한 다음 작은 데이터는
-	//list3의 tail node의 데이터와 대소 비교를 해준다.
-	
-	while(p&&q){ // p와 q가 null이 아닌동안
-		if(p->data>=q->data){
-			if(head3->head==NULL){
-				insert_last(head3,q->data);
-				q=q->link;
-				insert_last(head3,p->data);
-				p=p->link;
-				poly_print(head3);
-			}
-			else{
-				if(head3->tail->data >= q->data){
-					
-					insert_last_right_front(head3,q->data);
-					printf("ponit1\n");
-					poly_print(head3);
-					q= q->link;
-					insert_last(head3,p->data);
-					printf("ponit2\n");
-					poly_print(head3);
-					p=p->link;
-				}
-				else{
-					insert_last(head3,q->data);
-					q=q->link;
-					insert_last(head3,p->data);
-					p=p->link;
-				}
-			}
-		}
-		else{
-			if(head3==NULL){
-				insert_last(head3,p->data);
-				p=p->link;
-				insert_last(head3,q->data);
-				q=q->link;
-			}
-			else{
-				if(head3->tail->data >= q->data){
-					insert_last_right_front(head3,p->data);
-					p= p->link;
-					insert_last(head3,q->data);
-					q=q->link;
-				}
-				else{
-					insert_last(head3,p->data);
-					p=p->link;
-					insert_last(head3,q->data);
-					q=q->link;
-				}
-			}
-		}
-	}
-	
-	for(; p!=NULL; p= p->link){
-		insert_last(head3, p->data);
-	}
-	for(; q!=NULL; q = q->link){
-		insert_last(head3, q->data);
-	}
-}
+
 
 
 
@@ -175,7 +92,7 @@ int main(void){
 	insert_last(list2,2);
 	insert_last(list2,3);
 	
-	merge(list1,list2,list3);
+	alternate(list1,list2,list3);
 	poly_print(list3);
 	
 	free(list1);
