@@ -16,18 +16,20 @@ TreeNode n5 = {20, &n3, &n4};
 TreeNode n6 = {15, &n2, &n5};
 TreeNode *root = &n6;
 
-int sum=0;
-
-void inoder_sum(TreeNode *root){
-	if(root!=NULL){
-		inoder_sum(root->left);
-		sum +=root->data;
-		inoder_sum(root->right);
+void inorder_print_if_less_than(TreeNode* root, int input){
+	if(root !=NULL){
+		inorder_print_if_less_than(root->left,input);
+		if(root->data <input)
+		{
+			printf("%d보다 작은 노드: %d\n",input,root->data);
+		}
+		inorder_print_if_less_than(root->right,input);
 	}
 }
 
-
 int main(){
-	inoder_sum(root);
-	printf("합은 %d\n",sum);
+	int input = 20;
+	inorder_print_if_less_than(root,input);
+	
+	return 0;
 }
