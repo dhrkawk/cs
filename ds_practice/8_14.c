@@ -28,8 +28,14 @@ void inorder_print_if_less_than(TreeNode* root, int input){
 }
 
 int main(){
+<<<<<<< HEAD:src/main.c
 	int input = 20;
 	inorder_print_if_less_than(root,input);
 	
 	return 0;
 }
+=======
+	inoder_sum(root);
+	printf("합은 %d\n",sum);
+}
+>>>>>>> 1ad191955758178013b893437a4fe2fae19a4d6c:ds_practice/8_14.c
