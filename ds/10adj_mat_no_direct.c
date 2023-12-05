@@ -40,6 +40,16 @@ void print_adj_mat(GraphType *g){
 	}
 }
 
+int get_degree(GraphType *g,int v){
+	int count=0;
+	for(int j=0;j<g->n;j++){
+		if(g->adj_mat[v][j]==1){
+			count++;
+		}
+	}
+	return count;
+}
+
 int main(){
 	GraphType *g = (GraphType*)malloc(sizeof(GraphType));
 	init(g);
@@ -52,6 +62,9 @@ int main(){
 	insert_edge(g,1,2);
 	insert_edge(g,2,3);
 	print_adj_mat(g);
+
+	printf("0의 차수는 %d\n",get_degree(g,0));
+	printf("1의 차수는 %d\n",get_degree(g,1));
 	
 	free(g);
 	return 0;
