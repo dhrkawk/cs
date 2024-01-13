@@ -9,7 +9,7 @@ int list[MAX_SIZE];
 int binary_search(int key, int low, int high){
 	int middle;
 	
-	if(low<high){
+	if(low<=high){
 		middle = (low+high) /2;
 		if(key == list[middle]){
 			return middle;
